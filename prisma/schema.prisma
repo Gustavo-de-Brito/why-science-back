@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int        @id @default(autoincrement())
+  name     String     @unique @db.VarChar(50)
+  email    String     @unique @db.VarChar(100)
+  imageUrl String
+  password String
+  Like     Like[]
+  Question Question[]
+  Answer   Answer[]
+
+  @@map("users")
+}
+
+model Question {
+  id         Int      @id @default(autoincrement())
+  text       String   @unique
+  users      User     @relation(fields: [userId], references: [id])
+  userId     Int
+  categories Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  Answer     Answer[]
+  Like       Like[]
+
+  @@map("questions")
+}
+
+model Answer {
+  id         Int      @id @default(autoincrement())
+  text       String
+  users      User     @relation(fields: [userId], references: [id])
+  userId     Int
+  questions  Question @relation(fields: [questionId], references: [id])
+  questionId Int
+
+  @@map("answers")
+}
+
+model Like {
+  id         Int      @id @default(autoincrement())
+  users      User     @relation(fields: [userId], references: [id])
+  userId     Int
+  questions  Question @relation(fields: [questionId], references: [id])
+  questionId Int
+
+  @@unique([userId, questionId])
+  @@map("likes")
+}
+
+model Category {
+  id       Int        @id @default(autoincrement())
+  name     String     @unique @db.VarChar(30)
+  Question Question[]
+}
