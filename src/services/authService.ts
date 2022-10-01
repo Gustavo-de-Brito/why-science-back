@@ -24,9 +24,7 @@ async function registerUser(user: IUserRegister) {
   await isUserNameRegistered(user.name);
   await isEmailRegistered(user.email);
 
-  const SALT = Number(process.env.BCRYPT_SALT) || 10;
-
-  const encryptedPassword: string = bcyrpt.hashSync(user.name, SALT);
+  const encryptedPassword: string = bcyrpt.hashSync(user.name, 10);
 
   const newUser: UserData = {
     name: user.name,
