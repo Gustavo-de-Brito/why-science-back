@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { UserData, IUserRegister } from '../../types/userTypes';
+import { UserData, IUserRegister } from '../../src/types/userTypes';
 
 export async function userFactory(): Promise<UserData> {
   const password: string = faker.internet.password();

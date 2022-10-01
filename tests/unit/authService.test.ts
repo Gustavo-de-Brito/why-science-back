@@ -1,5 +1,5 @@
-import { authService } from '../../services/authService';
-import { userRepository } from '../../repositories/userRepository';
+import { authService } from '../../src/services/authService';
+import { userRepository } from '../../src/repositories/userRepository';
 import { registerUserFactory, userFactory } from '../factories/userFactory';
 import dotenv from 'dotenv';
 
