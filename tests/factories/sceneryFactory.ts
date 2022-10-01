@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import { userFactory } from './userFactory';
-import prisma from '../../databases/postgresSql';
+import prisma from '../../src/databases/postgresSql';
 
 dotenv.config();
 
