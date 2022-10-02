@@ -53,7 +53,6 @@ function checkPassword(dbPassword: string, reqPassword: string) {
 
 async function loginUser(user: IUserLogin): Promise<string> {
   const userData = await isEmailRegistered(user.email);
-  console.log(userData);
   checkPassword(userData.password, user.password);
 
   const JWT_PRIVATE_KEY = process.env.JWT_PRIVATE_KEY ??  '';

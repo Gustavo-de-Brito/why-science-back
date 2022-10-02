@@ -1,11 +1,9 @@
+import bcyrpt from 'bcrypt';
 import { authService } from '../../src/services/authService';
 import { userRepository } from '../../src/repositories/userRepository';
 import { registerUserFactory, userFactory } from '../factories/userFactory';
-import dotenv from 'dotenv';
 
-dotenv.config();
-
-describe('Testa o service de autenticação', () => {
+describe('Testes do service de autenticação', () => {
   it('deve retornar um erro de conflito quando o nome já está cadastrado', 
     async () => {
       const newUser = await registerUserFactory();
@@ -71,6 +69,53 @@ describe('Testa o service de autenticação', () => {
       await authService.registerUser(newUser);
 
       expect(userRepository.insert).toBeCalled();
+    }
+  );
+
+  it('deve retornar erro de não autorizado quando o email não está cadastrado',
+    async () => {
+      const user = await userFactory();
+      const loginUser = { email: user.email, password: user.password };
+
+      jest
+        .spyOn(userRepository, 'getUserByEmail')
+        .mockResolvedValue(null);
+
+      const result = authService.loginUser(loginUser);
+
+      expect(result).rejects.toEqual({ type: 'unauthorized', message: 'dados de login inválidos' });
+    }
+  );
+
+  it('deve retornar erro de não autorizado quando a senha está errada',
+    async () => {
+      const user = await userFactory();
+      const loginUser = { email: user.email, password: 'some wrong password' };
+
+      jest
+       .spyOn(userRepository, 'getUserByEmail')
+       .mockResolvedValue( { id: 12, ...user } );
+
+      const result = authService.loginUser(loginUser);
+      
+      expect(result).rejects.toEqual({ type: 'unauthorized', message: 'dados de login inválidos' });
+    }
+  );
+
+  it('deve retornar uma string não vazia como token quando enviado um login válido',
+    async () => {
+      const user = await userFactory();
+      const loginUser = { email: user.email, password: user.password };
+      const encryptedPassword = bcyrpt.hashSync(user.password, 10);
+
+      jest
+        .spyOn(userRepository, 'getUserByEmail')
+        .mockResolvedValue( { id: 12, ...user, password: encryptedPassword });
+
+      const result = await authService.loginUser(loginUser);
+
+      expect(typeof result).toBe('string');
+      expect(result.length).toBeGreaterThan(0);
     }
   );
 });
