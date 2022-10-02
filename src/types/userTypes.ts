@@ -8,4 +8,9 @@ export interface IUserRegister {
   confirmPassword: string;
 };
 
+export interface IUserLogin {
+  email: string;
+  password: string;
+}
+
 export type UserData = Omit<User, 'id'>;
