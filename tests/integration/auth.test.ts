@@ -57,6 +57,55 @@ describe('testes da rota de cadastro de novos usuários', () => {
   );
 });
 
+describe('Testes da rota de login', () => {
+  it('deve retornar status 422 com um body inválido',
+    async () => {
+      const body = {};
+
+      const response = await supertest(app).post('/sign-in').send(body);
+
+      expect(response.statusCode).toBe(422);
+    }
+  );
+
+  it('deve retornar status 401 quando enviado um email não cadastrado',
+    async () => {
+      const user = await userRegistered();
+      const body = {
+        email: 'somewrongemail@email.com',
+        password: user.password
+      };
+
+      const response = await supertest(app).post('/sign-in').send(body);
+
+      expect(response.statusCode).toBe(401);
+    }
+  );
+
+  it('deve retornar status 401 quando a senha passada estiver incorreta',
+    async () => {
+      const user = await userRegistered();
+      const body = { email: user.email, password: 'a-wrong-password'};
+
+      const response = await supertest(app).post('/sign-in').send(body);
+
+      expect(response.statusCode).toBe(401);
+    }
+  );
+
+  it('deve retonar um token e status 200 em caso de sucesso no login',
+    async () => {
+      const user = await userRegistered();
+      const body = { email: user.email, password: user.password };
+
+      const response = await supertest(app).post('/sign-in').send(body);
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body.token).not.toBeUndefined();
+    }
+  );
+});
+
 afterAll(async () => {
   await prisma.$disconnect();
 });
