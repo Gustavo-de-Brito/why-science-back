@@ -1,7 +1,8 @@
 import { categoryService } from './categoryService';
-import { IQuestionRegister } from '../types/questionTypes';
-import { Category, User } from '@prisma/client';
+import { IQuestionRegister, QuestionData } from '../types/questionTypes';
+import { Category, Question, User } from '@prisma/client';
 import { conflictError, notFoundError, unprocessableError } from '../utils/erroUtils';
+import { questionsRepository } from '../repositories/questionsRepository';
 
 async function isCategoryIdValid(categoryId: number) {
   const category: Category | null = await categoryService.findCategoryById(
@@ -28,7 +29,9 @@ async function createCategory(categoryName: string):Promise<Category> {
   return category;
 }
 
-async function addQuestion(question: IQuestionRegister, user: User) {
+async function addQuestion(question: IQuestionRegister, user: User)
+  :Promise<Question>
+  {
   let category:Category | null = null;
 
   if(question.categoryId !== undefined) {
@@ -40,6 +43,18 @@ async function addQuestion(question: IQuestionRegister, user: User) {
   if(category === null) {
     throw unprocessableError('Não foi informa um id ou nome de categoria');
   }
+
+  const newQuestion: QuestionData = {
+    text: question.text,
+    userId: user.id,
+    categoryId: category.id
+  }
+
+  const registeredQuestion: Question = await questionsRepository.insert(
+    newQuestion
+  );
+
+  return registeredQuestion;
 }
 
 export const questionService = {

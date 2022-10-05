@@ -7,7 +7,9 @@ export async function createQuestion(req: Request, res: Response) {
   const question: IQuestionRegister = req.body;
   const userData: User = res.locals.userData;
 
-  await questionService.addQuestion(question, userData);
+  const registeredQuestion: Question = await questionService.addQuestion(
+    question, userData
+  );
 
-  res.sendStatus(503);
+  res.status(201).send(registeredQuestion);
 }
