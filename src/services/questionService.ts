@@ -29,9 +29,19 @@ async function createCategory(categoryName: string):Promise<Category> {
   return category;
 }
 
+async function isQuestionRegistered(questionText: string) {
+  const question: Question | null = await questionsRepository.getQuestionByText(
+    questionText
+  );
+
+  if(question !== null) throw conflictError('Essa pergunta já existe');
+}
+
 async function addQuestion(question: IQuestionRegister, user: User)
   :Promise<Question>
-  {
+{
+  await isQuestionRegistered(question.text);
+
   let category:Category | null = null;
 
   if(question.categoryId !== undefined) {
