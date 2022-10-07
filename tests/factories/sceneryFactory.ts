@@ -43,3 +43,14 @@ export async function registeredQuestionScenery() {
 
   return dbQuestion;
 }
+
+export async function elevenQuestionsRegisteredScenery() {
+  const registeredQuestions = [];
+
+  for(let i = 0; i < 10; i++) {
+    const question = await registerQuestionFactory();
+    registeredQuestions.push(question);
+  }
+
+  return registeredQuestions;
+}

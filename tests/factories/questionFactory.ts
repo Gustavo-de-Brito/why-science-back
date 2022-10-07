@@ -6,3 +6,24 @@ export async function registerQuestionFactory(): Promise<IQuestionRegister> {
     text: `${faker.lorem.sentence()}?`
   };
 }
+
+export async function questionsDbGetFactory() {
+  const questions = [];
+
+  for(let i = 1; i <= 11; i++) {
+    const question = {
+      id: i,
+      text: `${faker.lorem.sentence()}?`,
+      categories: {
+        name: faker.lorem.word()
+      },
+      users: {
+        name: faker.name.fullName()
+      }
+    };
+
+    questions.push(question);
+  }
+
+  return questions;
+}
