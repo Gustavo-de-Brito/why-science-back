@@ -15,5 +15,7 @@ export async function createQuestion(req: Request, res: Response) {
 }
 
 export async function getAllQuestions(req: Request, res: Response) {
-  res.sendStatus(503);
+  const questions = await questionService.findQuestions();
+
+  res.status(200).send(questions);
 }

@@ -20,7 +20,33 @@ async function insert(question: QuestionData):Promise<Question> {
   return newQuestion;
 }
 
+async function getQuestions() {
+  const questions = await prisma.question.findMany(
+    {
+      select: {
+        id: true,
+        text: true,
+        categories: {
+          select: {
+            name: true
+          }
+        },
+        users: {
+          select: {
+            name: true
+          }
+        }
+      },
+      orderBy: { id: 'desc' },
+      take: 10
+    }
+  );
+
+  return questions;
+}
+
 export const questionsRepository = {
   getQuestionByText,
-  insert
+  insert,
+  getQuestions
 };
