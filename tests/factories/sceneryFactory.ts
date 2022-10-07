@@ -48,7 +48,7 @@ export async function elevenQuestionsRegisteredScenery() {
   const registeredQuestions = [];
 
   for(let i = 0; i < 10; i++) {
-    const question = await registerQuestionFactory();
+    const question = await registeredQuestionScenery();
     registeredQuestions.push(question);
   }
 

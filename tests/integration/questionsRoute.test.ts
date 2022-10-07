@@ -3,14 +3,18 @@ import app from '../../src/app';
 import prisma from '../../src/databases/postgresSql';
 import { categoryFactory, dbCategoryFactory } from '../factories/categoryFactory';
 import { registerQuestionFactory } from '../factories/questionFactory';
-import { registeredQuestionScenery, resetDatabase } from '../factories/sceneryFactory';
+import {
+  elevenQuestionsRegisteredScenery,
+  registeredQuestionScenery,
+  resetDatabase
+} from '../factories/sceneryFactory';
 import { dbUserFactory, tokenFactory } from '../factories/userFactory';
 
 beforeEach(async () => {
   await resetDatabase();
 });
 
-describe('Testes da rota de /questions', () => {
+describe('Testes da rota de POST /questions', () => {
   it('deve retornar 422 quando enviado um body inválido', async () => {
     const user = await dbUserFactory();
     const token = await tokenFactory(user.id);
@@ -160,6 +164,34 @@ describe('Testes da rota de /questions', () => {
       expect(response.statusCode).toBe(201);
     }
   );
+});
+
+describe('Testes da rota de GET /questions', () => {
+  it('deve retornar 401 quando enviado um token inválido', async () => {
+    const token: string = 'some-invalid-token';
+
+    const response = await supertest(app)
+      .get('/questions')
+      .set('Authorization', `Bearer ${ token }`)
+      .send();
+
+    expect(response.statusCode).toBe(401);
+  });
+
+  it('deve retonar 200 e uma lista de no máximo 10 elementos', async () => {
+    await elevenQuestionsRegisteredScenery();
+    const user = await dbUserFactory();
+    const token = await tokenFactory(user.id);
+
+    const response = await supertest(app)
+      .get('/questions')
+      .set('Authorization', `Bearer ${token}`)
+      .send();
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toBeInstanceOf(Array);
+    expect(response.body.length).toBeLessThanOrEqual(10);
+  });
 });
 
 afterAll(async () => {
