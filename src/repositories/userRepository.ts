@@ -22,6 +22,18 @@ async function getUserByEmail(email: string): Promise<User | null> {
   return user;
 }
 
+async function getUserById(userId: number): Promise<User | null> {
+  const user: User | null = await prisma.user.findUnique(
+    {
+      where: { id: userId }
+    }
+  );
+
+  return user;
+}
+
+
+
 async function insert(user: UserData) {
   await prisma.user.create({data: user});
 }
@@ -29,5 +41,6 @@ async function insert(user: UserData) {
 export const userRepository = {
   getUserByName,
   getUserByEmail,
+  getUserById,
   insert
 };

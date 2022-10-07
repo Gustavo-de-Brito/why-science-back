@@ -5,7 +5,8 @@ const config: Config = {
   testEnvironment: 'node',
   collectCoverage: true,
   collectCoverageFrom: [
-    '**/services/**'
+    '**/services/**',
+    '!**/e2eService.ts',
   ],
 };
 
