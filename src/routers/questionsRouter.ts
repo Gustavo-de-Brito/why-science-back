@@ -7,6 +7,7 @@ import {
 import schemaValidation from '../middlewares/schemaValidationMiddeware';
 import questionsSchema from '../schemas/questionsSchema';
 import tokenValidation from '../middlewares/tokenValidation';
+import paramsIdValidation from '../middlewares/paramsIdValidation';
 
 const questionsRouter:Router = Router();
 
@@ -25,6 +26,7 @@ questionsRouter.get(
 
 questionsRouter.post(
   '/questions/:id/likes',
+  paramsIdValidation,
   tokenValidation,
   toggleQuestionLike
 );

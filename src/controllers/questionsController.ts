@@ -22,7 +22,7 @@ export async function getAllQuestions(req: Request, res: Response) {
 
 export async function toggleQuestionLike(req: Request, res: Response) {
   const userData:User = res.locals.userData;
-  const questionId: number = Number(req.params.id);
+  const questionId: number = parseInt(req.params.id);
 
   await questionService.toggleQuestionLike(questionId, userData.id);
 

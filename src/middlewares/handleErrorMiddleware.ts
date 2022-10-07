@@ -12,7 +12,7 @@ function handlerErrorsMiddleware(
 
     return res.status(statusCode).send(err.message);
   }
-
+  console.log(err)
   res.sendStatus(500);
 }
 
