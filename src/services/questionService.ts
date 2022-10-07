@@ -87,6 +87,14 @@ async function findQuestions() {
   return formatedQuestions;
 }
 
+async function isQuestionIdValid(questionId: number) {
+  const question:Question | null = await questionsRepository.getQuestionById(
+    questionId
+  );
+
+  if(question === null) throw notFoundError('O id da questão não existe');
+}
+
 async function isQuestionLiked(questionId: number, userId: number)
   : Promise<Like | null>
 {
@@ -96,6 +104,7 @@ async function isQuestionLiked(questionId: number, userId: number)
 }
 
 async function toggleQuestionLike(questionId: number, userId: number) {
+  await isQuestionIdValid(questionId);
   const like:Like | null = await isQuestionLiked(questionId, userId);
 
   if(like === null) {

@@ -45,8 +45,19 @@ async function getQuestions() {
   return questions;
 }
 
+async function getQuestionById(questionId: number):Promise<Question | null> {
+  const question:Question | null = await prisma.question.findUnique(
+    {
+      where: { id: questionId }
+    }
+  );
+
+  return question;
+}
+
 export const questionsRepository = {
   getQuestionByText,
   insert,
-  getQuestions
+  getQuestions,
+  getQuestionById
 };
