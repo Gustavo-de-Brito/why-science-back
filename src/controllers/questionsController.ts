@@ -13,3 +13,9 @@ export async function createQuestion(req: Request, res: Response) {
 
   res.status(201).send(registeredQuestion);
 }
+
+export async function getAllQuestions(req: Request, res: Response) {
+  const questions = await questionService.findQuestions();
+
+  res.status(200).send(questions);
+}

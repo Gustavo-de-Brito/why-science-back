@@ -4,11 +4,11 @@ import { questionService } from '../../src/services/questionService';
 import { categoryRepository } from '../../src/repositories/categoryRepository';
 import { questionsRepository } from '../../src/repositories/questionsRepository';
 
-import { registerQuestionFactory } from '../factories/questionFactory';
+import { questionsDbGetFactory, registerQuestionFactory } from '../factories/questionFactory';
 import { categoryFactory } from '../factories/categoryFactory';
 import { userFactory } from '../factories/userFactory';
 
-describe('Teste do service de questions', () => {
+describe('Teste do service de POST de questions', () => {
   it('deve retornar um erro quando o texto da pergunta já está cadastrado',
     async () => {
       const user = await userFactory()
@@ -136,4 +136,19 @@ describe('Teste do service de questions', () => {
       expect(questionsRepository.insert).toBeCalled();
     }
   );
+});
+
+describe('Teste do service de GET de qeustions', () => {
+  it('deve retornar uma lista com no máximo 10 elementos', async () => {
+    const questions = await questionsDbGetFactory();
+
+    jest
+      .spyOn(questionsRepository, 'getQuestions')
+      .mockResolvedValue(questions);
+
+    const result = await questionService.findQuestions();
+
+    expect(result).toBeInstanceOf(Array);
+    expect(result.length).toBeLessThanOrEqual(10);
+  });
 });

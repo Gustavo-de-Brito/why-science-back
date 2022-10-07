@@ -67,6 +67,26 @@ async function addQuestion(question: IQuestionRegister, user: User)
   return registeredQuestion;
 }
 
+function formatQuestion(question: any) {
+  const formatedQuestion = {
+    id: question.id,
+    text: question.text,
+    category: question.categories.name,
+    author: question.users.name
+  }
+
+  return formatedQuestion;
+}
+
+async function findQuestions() {
+  const questions = await questionsRepository.getQuestions();
+
+  const formatedQuestions = questions.map(formatQuestion);
+
+  return formatedQuestions;
+}
+
 export const questionService = {
-  addQuestion
+  addQuestion,
+  findQuestions
 };
