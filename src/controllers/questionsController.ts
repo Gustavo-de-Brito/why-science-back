@@ -19,3 +19,7 @@ export async function getAllQuestions(req: Request, res: Response) {
 
   res.status(200).send(questions);
 }
+
+export async function toggleQuestionLike(req: Request, res: Response) {
+  res.sendStatus(503);
+}
