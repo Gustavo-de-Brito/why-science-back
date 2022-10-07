@@ -1,7 +1,6 @@
 import { faker } from '@faker-js/faker';
 
 import { questionService } from '../../src/services/questionService';
-import { categoryService } from '../../src/services/categoryService';
 import { categoryRepository } from '../../src/repositories/categoryRepository';
 import { questionsRepository } from '../../src/repositories/questionsRepository';
 

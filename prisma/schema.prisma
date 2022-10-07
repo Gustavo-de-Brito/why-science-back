@@ -63,4 +63,6 @@ model Category {
   id       Int        @id @default(autoincrement())
   name     String     @unique @db.VarChar(30)
   Question Question[]
+
+  @@map("categories")
 }

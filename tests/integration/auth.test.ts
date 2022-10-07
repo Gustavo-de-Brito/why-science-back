@@ -1,8 +1,8 @@
 import supertest from 'supertest';
 import app from '../../src/app';
 import prisma from '../../src/databases/postgresSql';
-import { userRegistered } from '../factories/sceneryFactory';
 import { registerUserFactory } from '../factories/userFactory';
+import { registeredUserScenery } from '../factories/sceneryFactory';
 
 beforeEach(async () => {
   await prisma.$executeRaw`TRUNCATE TABLE users CASCADE;`;
@@ -19,7 +19,7 @@ describe('testes da rota de cadastro de novos usuários', () => {
 
   it('deve retornar status 409 quando enviado um nome já cadastrado',
     async () => {
-      const newUser = await userRegistered();
+      const newUser = await registeredUserScenery();
       const body = {
         ...newUser,
         confirmPassword: newUser.password
@@ -33,7 +33,7 @@ describe('testes da rota de cadastro de novos usuários', () => {
 
   it('deve retornar status 409 quando enviado um email já cadastrado',
     async () => {
-      const newUser = await userRegistered();
+      const newUser = await registeredUserScenery();
       const body = {
         ...newUser,
         confirmPassword: newUser.password,
@@ -70,7 +70,7 @@ describe('Testes da rota de login', () => {
 
   it('deve retornar status 401 quando enviado um email não cadastrado',
     async () => {
-      const user = await userRegistered();
+      const user = await registeredUserScenery();
       const body = {
         email: 'somewrongemail@email.com',
         password: user.password
@@ -84,7 +84,7 @@ describe('Testes da rota de login', () => {
 
   it('deve retornar status 401 quando a senha passada estiver incorreta',
     async () => {
-      const user = await userRegistered();
+      const user = await registeredUserScenery();
       const body = { email: user.email, password: 'a-wrong-password'};
 
       const response = await supertest(app).post('/sign-in').send(body);
@@ -95,7 +95,7 @@ describe('Testes da rota de login', () => {
 
   it('deve retonar um token e status 200 em caso de sucesso no login',
     async () => {
-      const user = await userRegistered();
+      const user = await registeredUserScenery();
       const body = { email: user.email, password: user.password };
 
       const response = await supertest(app).post('/sign-in').send(body);
