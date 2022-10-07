@@ -10,7 +10,7 @@ export async function registerQuestionFactory(): Promise<IQuestionRegister> {
 export async function questionsDbGetFactory() {
   const questions = [];
 
-  for(let i = 1; i <= 11; i++) {
+  for(let i = 1; i <= 10; i++) {
     const question = {
       id: i,
       text: `${faker.lorem.sentence()}?`,

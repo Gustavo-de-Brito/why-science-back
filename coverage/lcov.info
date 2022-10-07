@@ -97,7 +97,7 @@ FNDA:2,isCategoryNameRegistered
 FNDA:2,createCategory
 FNDA:6,isQuestionRegistered
 FNDA:6,addQuestion
-FNDA:11,formatQuestion
+FNDA:10,formatQuestion
 FNDA:1,findQuestions
 DA:1,1
 DA:4,1
@@ -123,8 +123,8 @@ DA:54,1
 DA:57,2
 DA:63,2
 DA:67,2
-DA:71,11
-DA:78,11
+DA:71,10
+DA:78,10
 DA:82,1
 DA:84,1
 DA:86,1

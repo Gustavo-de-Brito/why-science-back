@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1665167417404" clover="3.2.0">
-  <project timestamp="1665167417404" name="All files">
+<coverage generated="1665167585064" clover="3.2.0">
+  <project timestamp="1665167585064" name="All files">
     <metrics statements="67" coveredstatements="65" conditionals="15" coveredconditionals="14" methods="17" coveredmethods="16" elements="99" coveredelements="95" complexity="0" loc="67" ncloc="67" packages="1" files="3" classes="3"/>
     <file name="authService.ts" path="/home/gustavo-de-brito/Documents/Driven/projetos/module5/projeto22-why-science/projeto22-why-science-back/src/services/authService.ts">
       <metrics statements="29" coveredstatements="27" conditionals="8" coveredconditionals="7" methods="7" coveredmethods="6"/>
@@ -71,8 +71,8 @@
       <line num="57" count="2" type="stmt"/>
       <line num="63" count="2" type="stmt"/>
       <line num="67" count="2" type="stmt"/>
-      <line num="71" count="11" type="stmt"/>
-      <line num="78" count="11" type="stmt"/>
+      <line num="71" count="10" type="stmt"/>
+      <line num="78" count="10" type="stmt"/>
       <line num="82" count="1" type="stmt"/>
       <line num="84" count="1" type="stmt"/>
       <line num="86" count="1" type="stmt"/>

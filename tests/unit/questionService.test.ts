@@ -149,5 +149,6 @@ describe('Teste do service de GET de qeustions', () => {
     const result = await questionService.findQuestions();
 
     expect(result).toBeInstanceOf(Array);
+    expect(result.length).toBeLessThanOrEqual(10);
   });
 });
