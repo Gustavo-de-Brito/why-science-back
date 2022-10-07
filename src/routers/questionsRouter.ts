@@ -1,7 +1,7 @@
 import { Router } from 'express';
+import { createQuestion, getAllQuestions } from '../controllers/questionsController';
 import schemaValidation from '../middlewares/schemaValidationMiddeware';
 import questionsSchema from '../schemas/questionsSchema';
-import { createQuestion } from '../controllers/questionsController';
 import tokenValidation from '../middlewares/tokenValidation';
 
 const questionsRouter:Router = Router();
@@ -12,5 +12,11 @@ questionsRouter.post(
   schemaValidation(questionsSchema),
   createQuestion
 );
+
+questionsRouter.get(
+  '/questions',
+  tokenValidation,
+  getAllQuestions
+)
 
 export default questionsRouter;

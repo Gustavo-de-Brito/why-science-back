@@ -13,3 +13,7 @@ export async function createQuestion(req: Request, res: Response) {
 
   res.status(201).send(registeredQuestion);
 }
+
+export async function getAllQuestions(req: Request, res: Response) {
+  res.sendStatus(503);
+}
