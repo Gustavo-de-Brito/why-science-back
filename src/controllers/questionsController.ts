@@ -21,5 +21,10 @@ export async function getAllQuestions(req: Request, res: Response) {
 }
 
 export async function toggleQuestionLike(req: Request, res: Response) {
-  res.sendStatus(503);
+  const userData:User = res.locals.userData;
+  const questionId: number = Number(req.params.id);
+
+  await questionService.toggleQuestionLike(questionId, userData.id);
+
+  res.sendStatus(201);
 }

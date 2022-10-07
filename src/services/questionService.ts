@@ -1,8 +1,9 @@
 import { categoryService } from './categoryService';
 import { IQuestionRegister, QuestionData } from '../types/questionTypes';
-import { Category, Question, User } from '@prisma/client';
+import { Category, Like, Question, User } from '@prisma/client';
 import { conflictError, notFoundError, unprocessableError } from '../utils/erroUtils';
 import { questionsRepository } from '../repositories/questionsRepository';
+import { likeService } from './likeService';
 
 async function isCategoryIdValid(categoryId: number) {
   const category: Category | null = await categoryService.findCategoryById(
@@ -86,7 +87,26 @@ async function findQuestions() {
   return formatedQuestions;
 }
 
+async function isQuestionLiked(questionId: number, userId: number)
+  : Promise<Like | null>
+{
+  const like:Like | null = await likeService.findLike(questionId, userId);
+
+  return like;
+}
+
+async function toggleQuestionLike(questionId: number, userId: number) {
+  const like:Like | null = await isQuestionLiked(questionId, userId);
+
+  if(like === null) {
+    await likeService.addLike(questionId, userId);
+  } else {
+    await likeService.removeLike(like.id);
+  }
+}
+
 export const questionService = {
   addQuestion,
-  findQuestions
+  findQuestions,
+  toggleQuestionLike
 };
