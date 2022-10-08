@@ -4,6 +4,7 @@ import { Category, Like, Question, User } from '@prisma/client';
 import { conflictError, notFoundError, unprocessableError } from '../utils/erroUtils';
 import { questionsRepository } from '../repositories/questionsRepository';
 import { likeService } from './likeService';
+import { IRegisterAnswer } from '../types/answerTypes';
 
 async function isCategoryIdValid(categoryId: number) {
   const category: Category | null = await categoryService.findCategoryById(
@@ -114,8 +115,17 @@ async function toggleQuestionLike(questionId: number, userId: number) {
   }
 }
 
+async function registerAnswer(
+  answer: IRegisterAnswer,
+  questionId: number,
+  userId: number
+) {
+  await isQuestionIdValid(questionId);
+}
+
 export const questionService = {
   addQuestion,
   findQuestions,
-  toggleQuestionLike
+  toggleQuestionLike,
+  registerAnswer
 };
