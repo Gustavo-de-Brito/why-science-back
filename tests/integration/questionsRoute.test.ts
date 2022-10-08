@@ -238,7 +238,7 @@ describe('Teste da rota de POST /questions/:id/likes', () => {
     }
   );
 
-  it('deve retonar 201 quando enviado as informações necessárias',
+  it('deve retonar 200 quando enviado as informações necessárias',
     async () => {
       const question = await registeredQuestionScenery();
       const user = await dbUserFactory();
@@ -249,11 +249,11 @@ describe('Teste da rota de POST /questions/:id/likes', () => {
         .set('Authorization', `Bearer ${ token }`)
         .send();
 
-      expect(response.statusCode).toBe(201);
+      expect(response.statusCode).toBe(200);
     }
   );
 
-  it('deve retonar 201 e deletar um like que já está criado',
+  it('deve retonar 200 e deletar um like que já está criado',
     async () => {
       const question = await registeredQuestionScenery();
       const user = await dbUserFactory();
@@ -269,8 +269,8 @@ describe('Teste da rota de POST /questions/:id/likes', () => {
         .set('Authorization', `Bearer ${ token }`)
         .send();
 
-      expect(responseCreateLike.statusCode).toBe(201);
-      expect(responseDeleteLike.statusCode).toBe(201);
+      expect(responseCreateLike.statusCode).toBe(200);
+      expect(responseDeleteLike.statusCode).toBe(200);
     }
   );
 });

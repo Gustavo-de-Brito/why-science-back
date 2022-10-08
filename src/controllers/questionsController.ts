@@ -26,5 +26,5 @@ export async function toggleQuestionLike(req: Request, res: Response) {
 
   await questionService.toggleQuestionLike(questionId, userData.id);
 
-  res.sendStatus(201);
+  res.sendStatus(200);
 }
