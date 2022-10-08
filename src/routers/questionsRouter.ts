@@ -3,6 +3,7 @@ import {
   addAnswer,
   createQuestion,
   getAllQuestions,
+  getAnswers,
   toggleQuestionLike
 } from '../controllers/questionsController';
 import schemaValidation from '../middlewares/schemaValidationMiddeware';
@@ -39,6 +40,13 @@ questionsRouter.post(
   tokenValidation,
   schemaValidation(answerSchema),
   addAnswer
+);
+
+questionsRouter.get(
+  '/questions/:id/answers',
+  paramsIdValidation,
+  tokenValidation,
+  getAnswers
 );
 
 export default questionsRouter;

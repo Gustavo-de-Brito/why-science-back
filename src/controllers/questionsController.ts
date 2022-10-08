@@ -39,3 +39,7 @@ export async function addAnswer(req: Request, res: Response) {
 
   res.status(201).send(answerDb);
 }
+
+export async function getAnswers(req: Request, res: Response) {
+  res.sendStatus(503);
+}
