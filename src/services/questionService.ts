@@ -1,10 +1,11 @@
 import { categoryService } from './categoryService';
 import { IQuestionRegister, QuestionData } from '../types/questionTypes';
-import { Category, Like, Question, User } from '@prisma/client';
+import { Answer, Category, Like, Question, User } from '@prisma/client';
 import { conflictError, notFoundError, unprocessableError } from '../utils/erroUtils';
 import { questionsRepository } from '../repositories/questionsRepository';
 import { likeService } from './likeService';
-import { IRegisterAnswer } from '../types/answerTypes';
+import { AnswerData, IRegisterAnswer } from '../types/answerTypes';
+import { answerService } from './answerService';
 
 async function isCategoryIdValid(categoryId: number) {
   const category: Category | null = await categoryService.findCategoryById(
@@ -121,6 +122,16 @@ async function registerAnswer(
   userId: number
 ) {
   await isQuestionIdValid(questionId);
+
+  const answerDb: AnswerData = {
+    ...answer,
+    questionId,
+    userId
+  };
+
+  const answerRegistered:Answer = await answerService.createAnswer(answerDb);
+
+  return answerRegistered;
 }
 
 export const questionService = {

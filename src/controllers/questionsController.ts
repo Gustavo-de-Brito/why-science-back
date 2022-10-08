@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Question, User } from '@prisma/client';
+import { Answer, Question, User } from '@prisma/client';
 import { questionService } from '../services/questionService';
 import { IQuestionRegister } from '../types/questionTypes';
 import { IRegisterAnswer } from '../types/answerTypes';
@@ -35,7 +35,7 @@ export async function addAnswer(req: Request, res: Response) {
   const userData:User = res.locals.userData;
   const questionId: number = parseInt(req.params.id);
 
-  await questionService.registerAnswer(answer, questionId, userData.id);
+  const answerDb:Answer = await questionService.registerAnswer(answer, questionId, userData.id);
 
-  res.sendStatus(503);
+  res.status(201).send(answerDb);
 }
