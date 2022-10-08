@@ -4,6 +4,8 @@ import prisma from '../../src/databases/postgresSql';
 import bcrypt from 'bcrypt';
 import { registerQuestionFactory } from './questionFactory';
 import { dbCategoryFactory } from './categoryFactory';
+import { answerFactory } from './answerFactory';
+import { faker } from '@faker-js/faker';
 
 dotenv.config();
 
@@ -53,4 +55,23 @@ export async function elevenQuestionsRegisteredScenery() {
   }
 
   return registeredQuestions;
+}
+
+export async function registeredAnswersScenery(questionId: number, userId: number) {
+  const qtdAnswers = faker.datatype.number({min: 1, max: 10});
+  const answers = [];
+
+  for(let i = 0; i < qtdAnswers; i++) {
+    const answer = await answerFactory();
+  
+    const dbAnswer = await prisma.answer.create(
+      {
+        data: { text: answer.text, questionId, userId }
+      }
+    );
+
+    answers.push(dbAnswer);
+  }
+
+  return answers;
 }

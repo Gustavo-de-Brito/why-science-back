@@ -39,3 +39,11 @@ export async function addAnswer(req: Request, res: Response) {
 
   res.status(201).send(answerDb);
 }
+
+export async function getAnswers(req: Request, res: Response) {
+  const questionId = parseInt(req.params.id);
+
+  const question = await questionService.findQuestionAnswers(questionId);
+
+  res.status(200).send(question);
+}

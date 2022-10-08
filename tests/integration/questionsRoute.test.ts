@@ -6,6 +6,7 @@ import { categoryFactory, dbCategoryFactory } from '../factories/categoryFactory
 import { registerQuestionFactory } from '../factories/questionFactory';
 import {
   elevenQuestionsRegisteredScenery,
+  registeredAnswersScenery,
   registeredQuestionScenery,
   resetDatabase
 } from '../factories/sceneryFactory';
@@ -348,6 +349,66 @@ describe('Teste da rota de POST /questions/:id/answers', () => {
       .send(answer);
 
     expect(response.statusCode).toBe(201);
+  });
+});
+
+describe('Teste da rota de POST /questions/:id/answers', () => {
+  it('deve retornar 401 quando enviado um token inválido', async () => {
+    const question = await registeredQuestionScenery();
+    const user = await dbUserFactory();
+    const token = 'a-invalid-token';
+
+    const response = await supertest(app)
+      .get(`/questions/${question.id}/answers`)
+      .set('Authorization', `Bearer ${ token }`)
+      .send();
+
+    expect(response.statusCode).toBe(401);
+  });
+
+  it('deve retornar 422 quando enviado um id de categoria inválido',
+   async () => {
+    const question = await registeredQuestionScenery();
+    const user = await dbUserFactory();
+    const token = await tokenFactory(user.id);
+
+    const response = await supertest(app)
+      .get(`/questions/a/answers`)
+      .set('Authorization', `Bearer ${ token }`)
+      .send();
+
+    expect(response.statusCode).toBe(422);
+  });
+
+  it('deve retornar 404 quando enviado um id de categoria não registrado',
+   async () => {
+    const question = await registeredQuestionScenery();
+    const user = await dbUserFactory();
+    const token = await tokenFactory(user.id);
+
+    const response = await supertest(app)
+      .get(`/questions/${(question.id + 1) }/answers`)
+      .set('Authorization', `Bearer ${ token }`)
+      .send();
+
+    expect(response.statusCode).toBe(404);
+  });
+
+  it('deve retornar 200 quando enviado os dados necessários',
+   async () => {
+    const question = await registeredQuestionScenery();
+    const user = await dbUserFactory();
+    const answer = await registeredAnswersScenery(question.id, user.id);
+    const token = await tokenFactory(user.id);
+
+    const response = await supertest(app)
+      .get(`/questions/${ question.id }/answers`)
+      .set('Authorization', `Bearer ${ token }`)
+      .send();
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body.answers).toBeInstanceOf(Array);
+    expect(response.body.answers.length).toBeLessThanOrEqual(10);
   });
 });
 

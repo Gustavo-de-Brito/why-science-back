@@ -8,6 +8,27 @@ async function insert(answer: AnswerData):Promise<Answer> {
   return answerDb
 }
 
+async function getAnswersByQuestionId(questionId: number) {
+  const answers = prisma.answer.findMany(
+    {
+      where: { questionId },
+      select: {
+        id: true,
+        text: true,
+        users: {
+          select: {
+            name: true,
+            imageUrl: true
+          }
+        }
+      }
+    }
+  );
+
+  return answers;
+}
+
 export const answerRepository = {
-  insert
+  insert,
+  getAnswersByQuestionId
 };

@@ -33,7 +33,8 @@ async function getQuestions() {
         },
         users: {
           select: {
-            name: true
+            name: true,
+            imageUrl: true
           }
         }
       },
@@ -55,9 +56,35 @@ async function getQuestionById(questionId: number):Promise<Question | null> {
   return question;
 }
 
+async function getQuestionCategoryAuthorById(questionId: number) {
+  const question = await prisma.question.findUnique(
+    {
+      where: { id: questionId },
+      select: {
+        id: true,
+        text: true,
+        categories: {
+          select: {
+            name: true
+          }
+        },
+        users: {
+          select: {
+            name: true,
+            imageUrl: true
+          }
+        }
+      }
+    }
+  );
+
+  return question;
+}
+
 export const questionsRepository = {
   getQuestionByText,
   insert,
   getQuestions,
-  getQuestionById
+  getQuestionById,
+  getQuestionCategoryAuthorById
 };

@@ -7,6 +7,22 @@ export async function registerQuestionFactory(): Promise<IQuestionRegister> {
   };
 }
 
+export async function questionDbGetFactory() {
+  const question = {
+    id: 12,
+    text: `${faker.lorem.sentence()}?`,
+    categories: {
+      name: faker.lorem.word()
+    },
+    users: {
+      name: faker.name.fullName(),
+      imageUrl: faker.image.cats()
+    }
+  };
+
+  return question;
+}
+
 export async function questionsDbGetFactory() {
   const questions = [];
 
@@ -18,7 +34,8 @@ export async function questionsDbGetFactory() {
         name: faker.lorem.word()
       },
       users: {
-        name: faker.name.fullName()
+        name: faker.name.fullName(),
+        imageUrl: faker.image.cats()
       }
     };
 
