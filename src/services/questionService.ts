@@ -75,7 +75,8 @@ function formatQuestion(question: any) {
     id: question.id,
     text: question.text,
     category: question.categories.name,
-    author: question.users.name
+    author: question.users.name,
+    authorImage: question.users.imageUrl
   }
 
   return formatedQuestion;
@@ -134,9 +135,23 @@ async function registerAnswer(
   return answerRegistered;
 }
 
+async function findQuestionAnswers(questionId: number) {
+  await isQuestionIdValid(questionId);
+
+  const question = await questionsRepository.getQuestionCategoryAuthorById(
+    questionId
+  );
+  const answers = await answerService.findQuestionAnswers(questionId);
+
+  const formatedQuestion = {...formatQuestion(question), answers};
+
+  return formatedQuestion;
+}
+
 export const questionService = {
   addQuestion,
   findQuestions,
   toggleQuestionLike,
-  registerAnswer
+  registerAnswer,
+  findQuestionAnswers
 };

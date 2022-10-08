@@ -8,6 +8,24 @@ async function createAnswer(answer: AnswerData):Promise<Answer> {
   return answerDb;
 }
 
+async function findQuestionAnswers(questionId: number) {
+  const answers = await answerRepository.getAnswersByQuestionId(questionId);
+
+  const formatedAnswers = answers.map(answer => {
+    const formatedAnswer = {
+      id: answer.id,
+      text: answer.text,
+      author: answer.users.name,
+      imageUrl: answer.users.imageUrl
+    }
+
+    return formatedAnswer;
+  });
+
+  return formatedAnswers;
+}
+
 export const answerService = {
-  createAnswer
+  createAnswer,
+  findQuestionAnswers
 };
