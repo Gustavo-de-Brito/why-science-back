@@ -4,11 +4,11 @@ import { questionService } from '../../src/services/questionService';
 import { categoryRepository } from '../../src/repositories/categoryRepository';
 import { questionsRepository } from '../../src/repositories/questionsRepository';
 
-import { questionsDbGetFactory, registerQuestionFactory } from '../factories/questionFactory';
+import { questionDbGetFactory, questionsDbGetFactory, registerQuestionFactory } from '../factories/questionFactory';
 import { categoryFactory } from '../factories/categoryFactory';
 import { userFactory } from '../factories/userFactory';
 import { likeRepository } from '../../src/repositories/likeRepository';
-import { answerFactory } from '../factories/answerFactory';
+import { answerFactory, answersArrayFactory } from '../factories/answerFactory';
 import { answerRepository } from '../../src/repositories/answerRepository';
 
 describe('Teste do service de POST de questions', () => {
@@ -218,7 +218,7 @@ describe('Testes do service de POST de questions para like', () => {
 });
 
 describe('Testes do service de POST de questions para answers', () => {
-  it('deve retornar um quando passado um id de pergunta inválido', async () => {
+  it('deve retornar um erro quando passado um id de pergunta inválido', async () => {
     const answer = await answerFactory();
     const questionId:number = 12;
     const userId:number = 12;
@@ -232,7 +232,7 @@ describe('Testes do service de POST de questions para answers', () => {
     expect(result).rejects.toEqual({ type: 'not_found', message: 'O id da questão não existe' });
   });
 
-  it('deve retornar um quando passado um id de pergunta inválido', async () => {
+  it('deve chamar a função de cadastro em caso de sucesso', async () => {
     const answer = await answerFactory();
     const question = await registerQuestionFactory();
     const questionId:number = 12;
@@ -248,5 +248,40 @@ describe('Testes do service de POST de questions para answers', () => {
     await questionService.registerAnswer(answer, questionId, userId);
 
     expect(answerRepository.insert).toBeCalled();
+  });
+});
+
+describe('Testes do service de GET de question para answers', () => {
+  it('deve retornar um erro quando passado um id de pergunta inválido', async () => {
+    const questionId:number = 12;
+
+    jest
+      .spyOn(questionsRepository, 'getQuestionById')
+      .mockResolvedValue(null);
+
+    const result = questionService.findQuestionAnswers(questionId);
+
+    expect(result).rejects.toEqual({ type: 'not_found', message: 'O id da questão não existe' });
+  });
+
+  it('deve retonar um objeto em caso de sucesso', async () => {
+    const question = await questionDbGetFactory();
+    const questionId:number = 12;
+    const answers = await answersArrayFactory();
+
+    jest
+      .spyOn(questionsRepository, 'getQuestionById')
+      .mockResolvedValue({id: question.id, text: question.text, userId: 12, categoryId: 12});
+    jest
+      .spyOn(questionsRepository, 'getQuestionCategoryAuthorById')
+      .mockResolvedValue(question);
+    jest
+      .spyOn(answerRepository, 'getAnswersByQuestionId')
+      .mockResolvedValue(answers)
+
+    const result = await questionService.findQuestionAnswers(questionId);
+
+    expect(result).toBeInstanceOf(Object);
+    expect(result.answers).toBeInstanceOf(Array);
   });
 });
