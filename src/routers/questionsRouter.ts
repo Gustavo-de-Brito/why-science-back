@@ -9,6 +9,7 @@ import schemaValidation from '../middlewares/schemaValidationMiddeware';
 import questionsSchema from '../schemas/questionsSchema';
 import tokenValidation from '../middlewares/tokenValidation';
 import paramsIdValidation from '../middlewares/paramsIdValidation';
+import answerSchema from '../schemas/answerSchema';
 
 const questionsRouter:Router = Router();
 
@@ -36,6 +37,7 @@ questionsRouter.post(
   '/questions/:id/answers',
   paramsIdValidation,
   tokenValidation,
+  schemaValidation(answerSchema),
   addAnswer
 );
 

@@ -30,5 +30,8 @@ export async function toggleQuestionLike(req: Request, res: Response) {
 }
 
 export async function addAnswer(req: Request, res: Response) {
+  const userData:User = res.locals.userData;
+  const questionId: number = parseInt(req.params.id);
+
   res.sendStatus(503);
 }
