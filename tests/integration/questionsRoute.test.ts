@@ -1,6 +1,7 @@
 import supertest from 'supertest';
 import app from '../../src/app';
 import prisma from '../../src/databases/postgresSql';
+import { answerFactory } from '../factories/answerFactory';
 import { categoryFactory, dbCategoryFactory } from '../factories/categoryFactory';
 import { registerQuestionFactory } from '../factories/questionFactory';
 import {
@@ -273,6 +274,81 @@ describe('Teste da rota de POST /questions/:id/likes', () => {
       expect(responseDeleteLike.statusCode).toBe(200);
     }
   );
+});
+
+describe('Teste da rota de POST /questions/:id/answers', () => {
+  it('deve retornar 401 quando enviado um token inválido', async () => {
+    const question = await registeredQuestionScenery();
+    const user = await dbUserFactory();
+    const answer = await answerFactory()
+    const token = 'a-invalid-token';
+
+    const response = await supertest(app)
+      .post(`/questions/${question.id}/answers`)
+      .set('Authorization', `Bearer ${ token }`)
+      .send(answer);
+
+    expect(response.statusCode).toBe(401);
+  });
+
+  it('deve retornar 422 quando enviado um body inválido', async () => {
+    const question = await registeredQuestionScenery();
+    const user = await dbUserFactory();
+    const answer = {};
+    const token = await tokenFactory(user.id);
+
+    const response = await supertest(app)
+      .post(`/questions/${question.id}/answers`)
+      .set('Authorization', `Bearer ${ token }`)
+      .send(answer);
+
+    expect(response.statusCode).toBe(422);
+  });
+
+  it('deve retornar 422 quando enviado um id de categoria inválido',
+   async () => {
+    const question = await registeredQuestionScenery();
+    const user = await dbUserFactory();
+    const answer = await answerFactory();
+    const token = await tokenFactory(user.id);
+
+    const response = await supertest(app)
+      .post(`/questions/a/answers`)
+      .set('Authorization', `Bearer ${ token }`)
+      .send(answer);
+
+    expect(response.statusCode).toBe(422);
+  });
+
+  it('deve retornar 404 quando enviado um id de categoria não registrado',
+   async () => {
+    const question = await registeredQuestionScenery();
+    const user = await dbUserFactory();
+    const answer = await answerFactory();
+    const token = await tokenFactory(user.id);
+
+    const response = await supertest(app)
+      .post(`/questions/${(question.id + 1) }/answers`)
+      .set('Authorization', `Bearer ${ token }`)
+      .send(answer);
+
+    expect(response.statusCode).toBe(404);
+  });
+
+  it('deve retornar 201 quando enviado os dados necessários',
+   async () => {
+    const question = await registeredQuestionScenery();
+    const user = await dbUserFactory();
+    const answer = await answerFactory();
+    const token = await tokenFactory(user.id);
+
+    const response = await supertest(app)
+      .post(`/questions/${ question.id }/answers`)
+      .set('Authorization', `Bearer ${ token }`)
+      .send(answer);
+
+    expect(response.statusCode).toBe(201);
+  });
 });
 
 afterAll(async () => {

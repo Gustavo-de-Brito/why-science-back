@@ -8,6 +8,8 @@ import { questionsDbGetFactory, registerQuestionFactory } from '../factories/que
 import { categoryFactory } from '../factories/categoryFactory';
 import { userFactory } from '../factories/userFactory';
 import { likeRepository } from '../../src/repositories/likeRepository';
+import { answerFactory } from '../factories/answerFactory';
+import { answerRepository } from '../../src/repositories/answerRepository';
 
 describe('Teste do service de POST de questions', () => {
   it('deve retornar um erro quando o texto da pergunta já está cadastrado',
@@ -213,4 +215,38 @@ describe('Testes do service de POST de questions para like', () => {
       expect(likeRepository.deleteLike).toBeCalled();
     }
   );
+});
+
+describe('Testes do service de POST de questions para answers', () => {
+  it('deve retornar um quando passado um id de pergunta inválido', async () => {
+    const answer = await answerFactory();
+    const questionId:number = 12;
+    const userId:number = 12;
+
+    jest
+      .spyOn(questionsRepository, 'getQuestionById')
+      .mockResolvedValue(null);
+
+    const result = questionService.registerAnswer(answer, questionId, userId);
+
+    expect(result).rejects.toEqual({ type: 'not_found', message: 'O id da questão não existe' });
+  });
+
+  it('deve retornar um quando passado um id de pergunta inválido', async () => {
+    const answer = await answerFactory();
+    const question = await registerQuestionFactory();
+    const questionId:number = 12;
+    const userId:number = 12;
+
+    jest
+      .spyOn(questionsRepository, 'getQuestionById')
+      .mockResolvedValue({ id: questionId, text: question.text, userId: 14, categoryId: 12});
+    jest
+      .spyOn(answerRepository, 'insert')
+      .mockResolvedValue({ id: 12, text: answer.text, questionId, userId});
+
+    await questionService.registerAnswer(answer, questionId, userId);
+
+    expect(answerRepository.insert).toBeCalled();
+  });
 });

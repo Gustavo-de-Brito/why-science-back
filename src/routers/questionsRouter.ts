@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  addAnswer,
   createQuestion,
   getAllQuestions,
   toggleQuestionLike
@@ -8,6 +9,7 @@ import schemaValidation from '../middlewares/schemaValidationMiddeware';
 import questionsSchema from '../schemas/questionsSchema';
 import tokenValidation from '../middlewares/tokenValidation';
 import paramsIdValidation from '../middlewares/paramsIdValidation';
+import answerSchema from '../schemas/answerSchema';
 
 const questionsRouter:Router = Router();
 
@@ -29,6 +31,14 @@ questionsRouter.post(
   paramsIdValidation,
   tokenValidation,
   toggleQuestionLike
+);
+
+questionsRouter.post(
+  '/questions/:id/answers',
+  paramsIdValidation,
+  tokenValidation,
+  schemaValidation(answerSchema),
+  addAnswer
 );
 
 export default questionsRouter;
