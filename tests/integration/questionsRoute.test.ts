@@ -194,6 +194,87 @@ describe('Testes da rota de GET /questions', () => {
   });
 });
 
+describe('Teste da rota de POST /questions/:id/likes', () => {
+  it('deve retornar 401 quando enviado um token inválido', async () => {
+    const question = await registeredQuestionScenery();
+    const user = await dbUserFactory();
+    const token = 'a-invalid-token';
+
+    const response = await supertest(app)
+      .post(`/questions/${question.id}/likes`)
+      .set('Authorization', `Bearer ${ token }`)
+      .send();
+
+    expect(response.statusCode).toBe(401);
+  });
+
+  it('deve retonar 422 quando enviado um id de pergunta com formato inválido',
+    async () => {
+      const question = await registeredQuestionScenery();
+      const user = await dbUserFactory();
+      const token = await tokenFactory(user.id);
+
+      const response = await supertest(app)
+        .post(`/questions/a/likes`)
+        .set('Authorization', `Bearer ${ token }`)
+        .send();
+
+      expect(response.statusCode).toBe(422);
+    }
+  );
+
+  it('deve retonar 422 quando enviado um id de pergunta com formato inválido',
+    async () => {
+      const question = await registeredQuestionScenery();
+      const user = await dbUserFactory();
+      const token = await tokenFactory(user.id);
+
+      const response = await supertest(app)
+        .post(`/questions/${ (question.id + 1) }/likes`)
+        .set('Authorization', `Bearer ${ token }`)
+        .send();
+
+      expect(response.statusCode).toBe(404);
+    }
+  );
+
+  it('deve retonar 200 quando enviado as informações necessárias',
+    async () => {
+      const question = await registeredQuestionScenery();
+      const user = await dbUserFactory();
+      const token = await tokenFactory(user.id);
+
+      const response = await supertest(app)
+        .post(`/questions/${ question.id }/likes`)
+        .set('Authorization', `Bearer ${ token }`)
+        .send();
+
+      expect(response.statusCode).toBe(200);
+    }
+  );
+
+  it('deve retonar 200 e deletar um like que já está criado',
+    async () => {
+      const question = await registeredQuestionScenery();
+      const user = await dbUserFactory();
+      const token = await tokenFactory(user.id);
+
+      const responseCreateLike = await supertest(app)
+        .post(`/questions/${ question.id }/likes`)
+        .set('Authorization', `Bearer ${ token }`)
+        .send();
+
+      const responseDeleteLike = await supertest(app)
+        .post(`/questions/${ question.id }/likes`)
+        .set('Authorization', `Bearer ${ token }`)
+        .send();
+
+      expect(responseCreateLike.statusCode).toBe(200);
+      expect(responseDeleteLike.statusCode).toBe(200);
+    }
+  );
+});
+
 afterAll(async () => {
   await prisma.$disconnect();
 });

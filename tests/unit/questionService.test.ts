@@ -7,6 +7,7 @@ import { questionsRepository } from '../../src/repositories/questionsRepository'
 import { questionsDbGetFactory, registerQuestionFactory } from '../factories/questionFactory';
 import { categoryFactory } from '../factories/categoryFactory';
 import { userFactory } from '../factories/userFactory';
+import { likeRepository } from '../../src/repositories/likeRepository';
 
 describe('Teste do service de POST de questions', () => {
   it('deve retornar um erro quando o texto da pergunta já está cadastrado',
@@ -138,7 +139,7 @@ describe('Teste do service de POST de questions', () => {
   );
 });
 
-describe('Teste do service de GET de qeustions', () => {
+describe('Teste do service de GET de questions', () => {
   it('deve retornar uma lista com no máximo 10 elementos', async () => {
     const questions = await questionsDbGetFactory();
 
@@ -151,4 +152,65 @@ describe('Teste do service de GET de qeustions', () => {
     expect(result).toBeInstanceOf(Array);
     expect(result.length).toBeLessThanOrEqual(10);
   });
+});
+
+describe('Testes do service de POST de questions para like', () => {
+  it('deve retornar um erro quando passado um id de pergunta inválido',
+    async () => {
+      const questionId:number = 12;
+      const userId:number = 12;
+
+      jest
+        .spyOn(questionsRepository, 'getQuestionById')
+        .mockResolvedValue(null);
+
+      const result = questionService.toggleQuestionLike(questionId, userId);
+
+      expect(result).rejects.toEqual({ type: 'not_found', message: 'O id da questão não existe' });
+    }
+  );
+
+  it('deve criar um like pra pergunta se o mesmo não está cadastrado',
+    async () => {
+      const questionId = 12;
+      const question = await registerQuestionFactory();
+      const userId = 12;
+  
+      jest
+        .spyOn(questionsRepository, 'getQuestionById')
+        .mockResolvedValue({ id: questionId, text: question.text, userId: 14, categoryId: 12});
+      jest
+        .spyOn(likeRepository, 'getLikeByUserQuestionId')
+        .mockResolvedValue(null);
+      jest
+        .spyOn(likeRepository, 'insert')
+        .mockResolvedValue(undefined);
+
+      await questionService.toggleQuestionLike(questionId, userId);
+
+      expect(likeRepository.insert).toBeCalled();
+    }
+  );
+
+  it('deve deletar o like pra pergunta se o mesmo já está cadastrado',
+    async () => {
+      const questionId = 12;
+      const question = await registerQuestionFactory();
+      const userId = 12;
+  
+      jest
+        .spyOn(questionsRepository, 'getQuestionById')
+        .mockResolvedValue({ id: questionId, text: question.text, userId: 14, categoryId: 12});
+      jest
+        .spyOn(likeRepository, 'getLikeByUserQuestionId')
+        .mockResolvedValue({ id: 12, questionId, userId });
+      jest
+        .spyOn(likeRepository, 'deleteLike')
+        .mockResolvedValue(undefined);
+
+      await questionService.toggleQuestionLike(questionId, userId);
+
+      expect(likeRepository.deleteLike).toBeCalled();
+    }
+  );
 });

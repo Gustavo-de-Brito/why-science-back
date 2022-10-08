@@ -1,8 +1,13 @@
 import { Router } from 'express';
-import { createQuestion, getAllQuestions } from '../controllers/questionsController';
+import {
+  createQuestion,
+  getAllQuestions,
+  toggleQuestionLike
+} from '../controllers/questionsController';
 import schemaValidation from '../middlewares/schemaValidationMiddeware';
 import questionsSchema from '../schemas/questionsSchema';
 import tokenValidation from '../middlewares/tokenValidation';
+import paramsIdValidation from '../middlewares/paramsIdValidation';
 
 const questionsRouter:Router = Router();
 
@@ -17,6 +22,13 @@ questionsRouter.get(
   '/questions',
   tokenValidation,
   getAllQuestions
-)
+);
+
+questionsRouter.post(
+  '/questions/:id/likes',
+  paramsIdValidation,
+  tokenValidation,
+  toggleQuestionLike
+);
 
 export default questionsRouter;

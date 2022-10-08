@@ -19,3 +19,12 @@ export async function getAllQuestions(req: Request, res: Response) {
 
   res.status(200).send(questions);
 }
+
+export async function toggleQuestionLike(req: Request, res: Response) {
+  const userData:User = res.locals.userData;
+  const questionId: number = parseInt(req.params.id);
+
+  await questionService.toggleQuestionLike(questionId, userData.id);
+
+  res.sendStatus(200);
+}

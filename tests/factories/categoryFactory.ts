@@ -10,7 +10,7 @@ export async function categoryFactory(): Promise<Category> {
 }
 
 export async function dbCategoryFactory() {
-  const categoryName = faker.lorem.word();
+  const categoryName = faker.lorem.words(3);
 
   const category = await prisma.category.create(
     {
