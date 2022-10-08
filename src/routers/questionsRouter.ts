@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  addAnswer,
   createQuestion,
   getAllQuestions,
   toggleQuestionLike
@@ -29,6 +30,13 @@ questionsRouter.post(
   paramsIdValidation,
   tokenValidation,
   toggleQuestionLike
+);
+
+questionsRouter.post(
+  '/questions/:id/answers',
+  paramsIdValidation,
+  tokenValidation,
+  addAnswer
 );
 
 export default questionsRouter;

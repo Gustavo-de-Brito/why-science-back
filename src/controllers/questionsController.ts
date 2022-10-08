@@ -28,3 +28,7 @@ export async function toggleQuestionLike(req: Request, res: Response) {
 
   res.sendStatus(200);
 }
+
+export async function addAnswer(req: Request, res: Response) {
+  res.sendStatus(503);
+}
